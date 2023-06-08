@@ -24,7 +24,7 @@ function retrieve_repos () {
     echo "---> 💾 Cloning repo: DfE-Digital/${REPO_NAME}"
 
     git clone --depth=1 \
-        git@github.com:DFE-Digital/${REPO_NAME}.git \
+        https://github.com/DFE-Digital/${REPO_NAME}.git \
         ${SERVICES_REPO_DIR}/${REPO_NAME}
 }
 
