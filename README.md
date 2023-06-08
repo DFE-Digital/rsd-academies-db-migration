@@ -23,3 +23,11 @@ Tame the beast that is the Academies database, and solve the issues outlined abo
 - Supportability; identify options to make the database more supportable, by splitting out concerns into multiple databases, providing that ownership to individual services, to reduce the overall database footprint.
 - Standards and processes; have clear standards and processes in place for shared data, so that tools and libraries can be built on top of these for simple reusability and support amongst services that will use them.
 - Trustworthiness; trust in the data presented in various RDS systems (in particular FIAT) has emerged as a particular issue for the services. One of the main reasons for this is redundant and/or duplicate data in the system, often stemming from more than one data source being used for any particular data point. This and other sources of distrust need to be explored further and addressed.
+
+## Development
+
+GitHub Actions secrets:
+
+- `DATABASE_STRUCTURE_CONTENTS` - CSV contents of database structure CSV from Akhtar
+- `FLY_API_TOKEN` - for deploying of HTML to fly
+- `NGINX_AUTH` - http auth credentials for nginx

@@ -1,0 +1,11 @@
+server {
+    listen 8080;
+
+    location / {
+        root /usr/share/nginx/html;
+        index index.html;
+
+        auth_basic "#rsd-academies-db-working-group";
+        auth_basic_user_file /etc/nginx/.htpasswd;
+    }
+}

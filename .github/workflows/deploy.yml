@@ -1,0 +1,36 @@
+name: deploy
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11.3'
+
+      - run: ./scripts/bootstrap
+
+      - run: ./scripts/generate-data-usage-csvs
+
+      - run: 'echo "${DATABASE_STRUCTURE_CONTENTS}" > database_structure.csv'
+        shell: bash
+        env:
+          DATABASE_STRUCTURE_CONTENTS: ${{secrets.DATABASE_STRUCTURE_CONTENTS}}
+
+      - run: ./scripts/build
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: deploy to fly
+        run: flyctl deploy --remote-only --build-secret nginx_auth="${NGINX_AUTH}"
+        env:
+          NGINX_AUTH: ${{ secrets.NGINX_AUTH }}

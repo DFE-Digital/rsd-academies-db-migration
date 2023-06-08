@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "academies-database-migration"
+version = "0.1.0"
+description = ""
+authors = ["David Winter <i@djw.me>"]
+readme = "README.md"
+packages = [{include = "academies_database_migration"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pandas = "^2.0.1"
+panel = "^1.0.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
