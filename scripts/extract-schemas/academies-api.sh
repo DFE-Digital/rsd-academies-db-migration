@@ -25,6 +25,6 @@ cat "schema-extraction-${SERVICE}.legacy.sql" >> "schema-extraction-${SERVICE}.s
 rm "schema-extraction-${SERVICE}.legacy.sql"
 
 DEFAULT_SCHEMA=sdd
-sed -i '' -r "s/CREATE TABLE \[([^\[]*)\] \(/CREATE TABLE [${DEFAULT_SCHEMA}].[\1] (/" "schema-extraction-${SERVICE}.sql"
+sed -i '' -r -e "s/CREATE TABLE \[([^\[]*)\] \(/CREATE TABLE [${DEFAULT_SCHEMA}].[\1] (/" "schema-extraction-${SERVICE}.sql"
 
 docker compose down --remove-orphans --volumes

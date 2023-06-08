@@ -20,7 +20,7 @@ SQL_DB_TABLES=$(docker compose -f docker-compose.ci.yml run --rm --entrypoint ""
 echo "${SQL_DB_TABLES}" > "schema-extraction-${SERVICE}.txt"
 
 DEFAULT_SCHEMA=complete
-sed -r "s/(.*)/CREATE TABLE [${DEFAULT_SCHEMA}].[\1] (/" "schema-extraction-${SERVICE}.txt" \
+sed -r -e "s/(.*)/CREATE TABLE [${DEFAULT_SCHEMA}].[\1] (/" "schema-extraction-${SERVICE}.txt" \
     > "schema-extraction-${SERVICE}.sql"
 rm "schema-extraction-${SERVICE}.txt"
 
