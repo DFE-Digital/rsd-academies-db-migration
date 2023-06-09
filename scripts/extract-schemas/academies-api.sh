@@ -18,13 +18,16 @@ cp .env.database.example .env.database
 docker compose build webapi
 
 docker compose up --no-deps -d webapi
-docker compose cp webapi:/app/SQL/DbMigrationScriptLegacy.sql "schema-extraction-${SERVICE}.legacy.sql"
-docker compose cp webapi:/app/SQL/DbMigrationScript.sql "schema-extraction-${SERVICE}.sql"
+docker compose cp webapi:/app/SQL/DbMigrationScriptLegacy.sql "db-extraction-${SERVICE}.legacy.sql"
+docker compose cp webapi:/app/SQL/DbMigrationScript.sql "db-extraction-${SERVICE}.sql"
 
-cat "schema-extraction-${SERVICE}.legacy.sql" >> "schema-extraction-${SERVICE}.sql"
-rm "schema-extraction-${SERVICE}.legacy.sql"
+cat "db-extraction-${SERVICE}.legacy.sql" >> "db-extraction-${SERVICE}.sql"
+rm "db-extraction-${SERVICE}.legacy.sql"
 
 DEFAULT_SCHEMA=sdd
-sed -i -r "s/CREATE TABLE \[([^\[]*)\] \(/CREATE TABLE [${DEFAULT_SCHEMA}].[\1] (/" "schema-extraction-${SERVICE}.sql"
+cat "db-extraction-${SERVICE}.sql" \
+    | sed -r "s/CREATE TABLE \[([^\[]*)\] \(/CREATE TABLE [${DEFAULT_SCHEMA}].[\1] (/" \
+    > "schema-extraction-${SERVICE}.sql"
+rm "db-extraction-${SERVICE}.sql"
 
 docker compose down --remove-orphans --volumes

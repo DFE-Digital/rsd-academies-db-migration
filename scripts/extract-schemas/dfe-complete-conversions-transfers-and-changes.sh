@@ -17,11 +17,12 @@ docker compose -f docker-compose.ci.yml build
 docker compose -f docker-compose.ci.yml run --rm test echo "Creating DB by running entrypoint once"
 
 SQL_DB_TABLES=$(docker compose -f docker-compose.ci.yml run --rm --entrypoint "" test bundle exec rails runner "puts ActiveRecord::Base.connection.tables")
-echo "${SQL_DB_TABLES}" > "schema-extraction-${SERVICE}.txt"
+echo "${SQL_DB_TABLES}" > "db-extraction-${SERVICE}.txt"
 
 DEFAULT_SCHEMA=complete
-sed -r -e "s/(.*)/CREATE TABLE [${DEFAULT_SCHEMA}].[\1] (/" "schema-extraction-${SERVICE}.txt" \
+cat "db-extraction-${SERVICE}.txt" \
+    | sed -r "s/(.*)/CREATE TABLE [${DEFAULT_SCHEMA}].[\1] (/" \
     > "schema-extraction-${SERVICE}.sql"
-rm "schema-extraction-${SERVICE}.txt"
+rm "db-extraction-${SERVICE}.txt"
 
 docker compose -f docker-compose.ci.yml down --remove-orphans --volumes
