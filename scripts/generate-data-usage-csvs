@@ -35,7 +35,8 @@ function run_extraction_script () {
 	EXTRACTION_SCRIPT="./scripts/extract-schemas/${REPO_NAME}.sh"
     test -f "${EXTRACTION_SCRIPT}" \
         && echo "---> ⛏️ Extracting database usage for ${REPO_NAME}" \
-        && "${EXTRACTION_SCRIPT}" "${2}"
+        && "${EXTRACTION_SCRIPT}" "${2}" \
+        && echo "---> ✅ Completed extracting database usage for ${REPO_NAME}"
 }
 
 function search_repo_for_db_references () {
@@ -90,15 +91,18 @@ for i in "${repos[@]}"
 do
     retrieve_repos "${i}"
 done
+echo "---> ✅ Completed cloning repositories"
 
 echo "---> ⛏️ Extracting database usages"
 for i in "${repos[@]}"
 do
     run_extraction_script "${i}" "${SERVICES_REPO_DIR}"
 done
+echo "---> ✅ Completed extracting database usages"
 
-echo "---> 🔍 Search and 📦 package database uages"
+echo "---> 🔍 Search and 📦 package database usages"
 for i in "${repos[@]}"
 do
     search_repo_for_db_references "${i}" "${SERVICES_REPO_DIR}" "${SERVICES_USAGE_DIR}"
 done
+echo "---> ✅ Completed searching for database usages"

@@ -17,6 +17,7 @@ docker compose -f docker-compose.ci.yml build
 docker compose -f docker-compose.ci.yml run --rm test echo "Creating DB by running entrypoint once"
 
 SQL_DB_TABLES=$(docker compose -f docker-compose.ci.yml run --rm --entrypoint "" test bundle exec rails runner "puts ActiveRecord::Base.connection.tables")
+echo "Found Rails schema: ${SQL_DB_TABLES}"
 echo "${SQL_DB_TABLES}" > "db-extraction-${SERVICE}.txt"
 
 DEFAULT_SCHEMA=complete
