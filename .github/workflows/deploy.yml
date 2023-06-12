@@ -36,3 +36,4 @@ jobs:
         run: flyctl deploy --remote-only --build-secret nginx_auth="${NGINX_AUTH}"
         env:
           NGINX_AUTH: ${{ secrets.NGINX_AUTH }}
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
