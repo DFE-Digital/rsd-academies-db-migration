@@ -34,9 +34,11 @@ function run_extraction_script () {
 
 	EXTRACTION_SCRIPT="./scripts/extract-schemas/${REPO_NAME}.sh"
     test -f "${EXTRACTION_SCRIPT}" \
-        && echo "---> ⛏️ Extracting database usage for ${REPO_NAME}" \
-        && "${EXTRACTION_SCRIPT}" "${2}" \
-        && echo "---> ✅ Completed extracting database usage for ${REPO_NAME}"
+        && ( \
+            echo "---> ⛏️ Extracting database usage for ${REPO_NAME}" \
+            && "${EXTRACTION_SCRIPT}" "${2}" \
+            && echo "---> ✅ Completed extracting database usage for ${REPO_NAME}" \
+        ) || echo "---> 🕵️ No script found for ${REPO_NAME}"
 }
 
 function search_repo_for_db_references () {
