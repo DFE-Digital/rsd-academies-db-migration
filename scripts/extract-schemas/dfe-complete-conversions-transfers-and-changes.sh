@@ -20,6 +20,10 @@ SQL_DB_TABLES=$(docker compose -f docker-compose.ci.yml run --rm --entrypoint ""
 echo "Found Rails schema: ${SQL_DB_TABLES}"
 echo "${SQL_DB_TABLES}" > "db-extraction-${SERVICE}.txt"
 
+grep -h "create_table" db/schema.rb \
+    | sed -nr 's/.*create_table "([^"]*)".*/\1/p' \
+    >> "db-extraction-${SERVICE}.txt"
+
 DEFAULT_SCHEMA=complete
 cat "db-extraction-${SERVICE}.txt" \
     | sed -r "s/(.*)/CREATE TABLE [${DEFAULT_SCHEMA}].[\1] (/" \
