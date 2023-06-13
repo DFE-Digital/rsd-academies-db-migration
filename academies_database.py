@@ -11,13 +11,14 @@ prod_structure = pd.read_csv("database_structure.csv")
 schema_tables = prod_structure[["TABLE_SCHEMA", "TABLE_NAME"]].drop_duplicates()
 # schema_tables.to_csv("reduced_database_structure.csv", index=False)
 schema_tables = schema_tables.rename(columns={"TABLE_SCHEMA": "schema", "TABLE_NAME": "table"})
-schema_tables = schema_tables.sort_values(["schema", "table"], ignore_index = True, key=lambda col: col.str.lower())
 
 for service in services:
     data = pd.read_csv(f"services-usage/{service['repo_name']}.csv")
     data = data.rename(columns={service["repo_name"]: service["name"]})
-    schema_tables = schema_tables.merge(data, how="left", on=["schema", "table"])
+    schema_tables = schema_tables.merge(data, how="outer", on=["schema", "table"])
     schema_tables[service["name"]].fillna('')
+
+schema_tables = schema_tables.sort_values(["schema", "table"], ignore_index = True, key=lambda col: col.str.lower())
 
 service_names = [service["name"] for service in services]
 
