@@ -12,10 +12,10 @@ repos=( \
     "academies-api" \
     "amsd-casework" \
     "dfe-complete-conversions-transfers-and-changes" \
-    # "Dfe.Academies.External" \
-    # "find-information-about-academies-and-trusts" \
-    # "prepare-academy-conversions" \
-    # "prepare-academy-transfers" \
+    "Dfe.Academies.External" \
+    "find-information-about-academies-and-trusts" \
+    "prepare-academy-conversions" \
+    "prepare-academy-transfers" \
 )
 
 function retrieve_repos () {
