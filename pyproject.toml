@@ -2,7 +2,7 @@
 name = "academies-database-migration"
 version = "0.1.0"
 description = ""
-authors = ["David Winter <i@djw.me>"]
+authors = ["David Winter <david.winter@dxw.com>"]
 readme = "README.md"
 packages = [{include = "academies_database_migration"}]
 
