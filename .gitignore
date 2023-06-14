@@ -1,0 +1,7 @@
+services-usage/*.csv
+services-repos/*/
+*.html
+*.csv
+*.ipynb
+*.DS_Store
+nginx_auth.txt

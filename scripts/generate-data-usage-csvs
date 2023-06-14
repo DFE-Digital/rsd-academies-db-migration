@@ -1,0 +1,110 @@
+#!/bin/bash
+
+set -e
+
+SERVICES_REPO_DIR=services-repos
+SERVICES_USAGE_DIR=services-usage
+
+mkdir -p {"${SERVICES_USAGE_DIR}","${SERVICES_REPO_DIR}"}
+
+repos=( \
+    "academies-academisation-api" \
+    "academies-api" \
+    "amsd-casework" \
+    "dfe-complete-conversions-transfers-and-changes" \
+    "Dfe.Academies.External" \
+    "find-information-about-academies-and-trusts" \
+    "prepare-academy-conversions" \
+    "prepare-academy-transfers" \
+)
+
+function retrieve_repos () {
+    REPO_NAME=$1
+
+    echo "---> 💾 Cloning repo: DfE-Digital/${REPO_NAME}"
+
+    git clone --depth=1 \
+        https://github.com/DFE-Digital/${REPO_NAME}.git \
+        ${SERVICES_REPO_DIR}/${REPO_NAME}
+}
+
+function run_extraction_script () {
+    REPO_NAME=$1
+    REPOS_DIR=$2
+
+	EXTRACTION_SCRIPT="./scripts/extract-schemas/${REPO_NAME}.sh"
+    test -f "${EXTRACTION_SCRIPT}" \
+        && ( \
+            echo "---> ⛏️ Extracting database usage for ${REPO_NAME}" \
+            && "${EXTRACTION_SCRIPT}" "${2}" \
+            && echo "---> ✅ Completed extracting database usage for ${REPO_NAME}" \
+        ) || echo "---> 🕵️ No script found for ${REPO_NAME}"
+}
+
+function search_repo_for_db_references () {
+    REPO_NAME=$1
+    REPOS_DIR=$2
+    USAGES_DIR=$3
+
+    CSV_FILE="${USAGES_DIR}/${REPO_NAME}.csv"
+
+    rm -f "${CSV_FILE}"
+
+    echo "---> 🔍 Searching for database references for ${REPO_NAME}"
+
+    # Example: https://github.com/DFE-Digital/academies-api/blob/main/TramsDataApi/DatabaseModels/A2BApplication.cs
+    # [Table("A2BApplication", Schema="sdd")]
+
+    grep -Rh "\[Table(" ${REPOS_DIR}/${REPO_NAME}/ \
+        | sed -nr 's/.*Table\("(.*)".*"(.*)".*/\2,\1,1/p' \
+        >> "${CSV_FILE}"
+
+    # Example: https://github.com/DFE-Digital/amsd-casework/blob/9a465ffc0d2fc999f3aa4e442f36b76c950bb700/ConcernsCaseWork/ConcernsCaseWork.Data/Migrations/ConcernsDbContextModelSnapshot.cs#LL52C23-L52C30
+    # b.ToTable("AuditLog", "concerns", t =>
+
+    grep -Rh "ToTable" ${REPOS_DIR}/${REPO_NAME}/ \
+        | sed -nr  's/.*ToTable\("(.*)".*"(.*)".*/\2,\1,1/p' \
+        >> "${CSV_FILE}"
+
+    # To scan files created by dotnet-ef migration
+    # CREATE TABLE [concerns].[ConcernsCase] (
+
+    SQL_EXTRACT_FILE="${REPOS_DIR}/${REPO_NAME}/_sql_dumps/schema-extraction-${REPO_NAME}.sql"
+
+    if [[ -f "${SQL_EXTRACT_FILE}" ]]; then
+        grep -h "CREATE TABLE" "${SQL_EXTRACT_FILE}" \
+            | sed -nr  's/.*CREATE TABLE \[(.*)\]\.\[(.*)\].*/\1,\2,1/p' \
+            >> "${CSV_FILE}"
+    fi
+
+    echo "---> 📦 Packaging CSV for ${REPO_NAME}"
+
+    # Sort and filter uniques
+
+    sort -u "${CSV_FILE}" -o "${CSV_FILE}"
+
+    # Add CSV headings
+
+    echo -e "schema,table,${REPO_NAME}\n$(cat ${CSV_FILE})" > "${CSV_FILE}"
+}
+
+echo "---> 💾 Clone repositories"
+for i in "${repos[@]}"
+do
+    retrieve_repos "${i}"
+done
+echo "---> ✅ Completed cloning repositories"
+
+echo "---> ⛏️ Extracting database usages"
+for i in "${repos[@]}"
+do
+    run_extraction_script "${i}" "${SERVICES_REPO_DIR}"
+done
+echo "---> ✅ Completed extracting database usages"
+
+echo "---> 🔍 Search and 📦 package database usages"
+for i in "${repos[@]}"
+do
+    search_repo_for_db_references "${i}" "${SERVICES_REPO_DIR}" "${SERVICES_USAGE_DIR}"
+done
+echo "---> ✅ Completed searching for database usages"

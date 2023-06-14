@@ -1,0 +1,12 @@
+services:
+  web:
+    build:
+      context: .
+      secrets:
+        - nginx_auth
+    ports:
+      - "8080:80"
+
+secrets:
+  nginx_auth:
+    file: ./nginx_auth.txt

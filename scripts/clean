@@ -1,0 +1,5 @@
+#!/bin/bash
+
+docker compose -f services.compose.yml down --remove-orphans --volumes
+
+rm -rf services-repos services-usage

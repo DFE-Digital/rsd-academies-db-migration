@@ -1,0 +1,66 @@
+[
+    {
+        "name": "Concerns",
+        "repo_name": "amsd-casework",
+        "tech_lead": "Blake Byron",
+        "tech_stack": ".NET",
+        "delivery_status": "",
+        "notes": ""
+    },
+    {
+        "name": "Complete",
+        "repo_name": "dfe-complete-conversions-transfers-and-changes",
+        "tech_lead": "Meyric Rawlings",
+        "tech_stack": "Rails",
+        "delivery_status": "",
+        "notes": ""
+    },
+    {
+        "name": "Academies API",
+        "repo_name": "academies-api",
+        "tech_lead": "?",
+        "tech_stack": ".NET",
+        "delivery_status": "",
+        "notes": ""
+    },
+    {
+        "name": "Academisation API",
+        "repo_name": "academies-academisation-api",
+        "tech_lead": "?",
+        "tech_stack": ".NET",
+        "delivery_status": "",
+        "notes": ""
+    },
+    {
+        "name": "FIAT",
+        "repo_name": "find-information-about-academies-and-trusts",
+        "tech_lead": "Sara Gowen",
+        "tech_stack": ".NET",
+        "delivery_status": "Alpha",
+        "notes": "New app, no DB usage yet"
+    },
+    {
+        "name": "A2B",
+        "repo_name": "Dfe.Academies.External",
+        "tech_lead": "Paul Lockwood",
+        "tech_stack": ".NET",
+        "delivery_status": "",
+        "notes": "does not appear to use any DB"
+    },
+    {
+        "name": "Conversions",
+        "repo_name": "prepare-academy-conversions",
+        "tech_lead": "Paul Lockwood",
+        "tech_stack": ".NET",
+        "delivery_status": "",
+        "notes": "uses Academies and TRAMS API"
+    },
+    {
+        "name": "Transfers",
+        "repo_name": "prepare-academy-transfers",
+        "tech_lead": "Paul Lockwood",
+        "tech_stack": ".NET",
+        "delivery_status": "",
+        "notes": "uses TRAMS API"
+    }
+]
