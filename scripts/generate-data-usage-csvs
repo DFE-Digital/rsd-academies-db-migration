@@ -12,10 +12,10 @@ repos=( \
     "academies-api" \
     "amsd-casework" \
     "dfe-complete-conversions-transfers-and-changes" \
-    "Dfe.Academies.External" \
-    "find-information-about-academies-and-trusts" \
-    "prepare-academy-conversions" \
-    "prepare-academy-transfers" \
+    # "Dfe.Academies.External" \
+    # "find-information-about-academies-and-trusts" \
+    # "prepare-academy-conversions" \
+    # "prepare-academy-transfers" \
 )
 
 function retrieve_repos () {
@@ -69,7 +69,7 @@ function search_repo_for_db_references () {
     # To scan files created by dotnet-ef migration
     # CREATE TABLE [concerns].[ConcernsCase] (
 
-    SQL_EXTRACT_FILE="${REPOS_DIR}/${REPO_NAME}/schema-extraction-${REPO_NAME}.sql"
+    SQL_EXTRACT_FILE="${REPOS_DIR}/${REPO_NAME}/_sql_dumps/schema-extraction-${REPO_NAME}.sql"
 
     if [[ -f "${SQL_EXTRACT_FILE}" ]]; then
         grep -h "CREATE TABLE" "${SQL_EXTRACT_FILE}" \

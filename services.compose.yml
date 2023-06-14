@@ -1,0 +1,57 @@
+services:
+  concerns:
+    build:
+      context: ./services-repos/amsd-casework/
+      target: publish
+  academies_api:
+    build:
+      context: ./services-repos/academies-api/
+      target: build
+  academisation_api:
+    build:
+      context: ./services-repos/academies-academisation-api/
+      target: build
+
+  complete:
+    build:
+      context: ./services-repos/dfe-complete-conversions-transfers-and-changes/
+      target: web
+      args:
+        RAILS_ENV: "test"
+    env_file:
+       - ./services-repos/dfe-complete-conversions-transfers-and-changes/.env.test
+    depends_on:
+      test-db-health:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: sqlserver://sa:strongPassword&@test-db:1433/sip_test
+      DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL: "true"
+      SECRET_KEY_BASE: secret
+      CI: "true"
+      SENTRY_ENV: test
+      REDIS_URL: redis://test-redis:6379
+    # networks:
+    #   - test-ci
+
+  test-db:
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: strongPassword&
+    # networks:
+    #   - test-ci
+
+  test-db-health:
+    image: mcr.microsoft.com/mssql-tools:latest
+    command: /bin/bash -c "touch /var/log/sqlcmd.log && tail -f /var/log/sqlcmd.log"
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S test-db -U sa -P 'strongPassword&' -o /var/log/sqlcmd.log
+      interval: "2s"
+      retries: 10
+    depends_on:
+      - test-db
+#     networks:
+#       - test-ci
+
+# networks:
+#   test-ci:

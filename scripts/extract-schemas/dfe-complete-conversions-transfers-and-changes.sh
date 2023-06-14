@@ -1,33 +1,22 @@
 #!/bin/bash
 
-set -e
-
 SERVICE=dfe-complete-conversions-transfers-and-changes
-SERVICES_REPO_DIR=$1
+COMPOSE_NAME=complete
 
-if [ -z "$1" ]; then
-    echo "No repository directory supplied"
-    exit 1
-fi
+source ./scripts/extract-schemas/_helper.sh
 
-cd "${SERVICES_REPO_DIR}/${SERVICE}"
-rm -f "schema-extraction-${SERVICE}.sql"
+${COMPOSE_CMD} run --rm "${COMPOSE_NAME}" echo "Creating DB by running entrypoint once"
 
-docker compose -f docker-compose.ci.yml build
-docker compose -f docker-compose.ci.yml run --rm test echo "Creating DB by running entrypoint once"
-
-SQL_DB_TABLES=$(docker compose -f docker-compose.ci.yml run --rm --entrypoint "" test bundle exec rails runner "puts ActiveRecord::Base.connection.tables")
+SQL_DB_TABLES=$(${COMPOSE_CMD} run --rm --entrypoint "" "${COMPOSE_NAME}" bundle exec rails runner "puts ActiveRecord::Base.connection.tables")
 echo "Found Rails schema: ${SQL_DB_TABLES}"
-echo "${SQL_DB_TABLES}" > "db-extraction-${SERVICE}.txt"
+echo "${SQL_DB_TABLES}" > "${DUMPS_DIR}/db-extraction-${SERVICE}.txt"
 
-grep -h "create_table" db/schema.rb \
+grep -h "create_table" "${REPO_DIR}/db/schema.rb" \
     | sed -nr 's/.*create_table "([^"]*)".*/\1/p' \
-    >> "db-extraction-${SERVICE}.txt"
+    >> "${DUMPS_DIR}/db-extraction-${SERVICE}.txt"
 
 DEFAULT_SCHEMA=complete
-cat "db-extraction-${SERVICE}.txt" \
+cat "${DUMPS_DIR}/db-extraction-${SERVICE}.txt" \
     | sed -r "s/(.*)/CREATE TABLE [${DEFAULT_SCHEMA}].[\1] (/" \
-    > "schema-extraction-${SERVICE}.sql"
-rm "db-extraction-${SERVICE}.txt"
-
-docker compose -f docker-compose.ci.yml down --remove-orphans --volumes
+    > "${DUMPS_DIR}/schema-extraction-${SERVICE}.sql"
+rm "${DUMPS_DIR}/db-extraction-${SERVICE}.txt"
