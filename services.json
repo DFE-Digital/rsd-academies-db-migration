@@ -4,7 +4,8 @@
         "repo_name": "amsd-casework",
         "tech_lead": "Blake Byron",
         "tech_stack": ".NET",
-        "delivery_status": "",
+        "sql_user": "concerns",
+        "default_sql_schema": "concerns",
         "notes": ""
     },
     {
@@ -12,7 +13,8 @@
         "repo_name": "dfe-complete-conversions-transfers-and-changes",
         "tech_lead": "Meyric Rawlings",
         "tech_stack": "Rails",
-        "delivery_status": "",
+        "sql_user": "complete",
+        "default_sql_schema": "complete",
         "notes": ""
     },
     {
@@ -20,23 +22,26 @@
         "repo_name": "academies-api",
         "tech_lead": "?",
         "tech_stack": ".NET",
-        "delivery_status": "",
+        "sql_user": "sdd",
+        "default_sql_schema": "sdd",
         "notes": ""
     },
     {
         "name": "Academisation API",
         "repo_name": "academies-academisation-api",
-        "tech_lead": "?",
+        "tech_lead": "Paul Lockwood",
         "tech_stack": ".NET",
-        "delivery_status": "",
-        "notes": ""
+        "sql_user": "academisation",
+        "default_sql_schema": "academisation",
+        "notes": "Paul now owns this since the merging of the other projects he manages"
     },
     {
         "name": "FIAT",
         "repo_name": "find-information-about-academies-and-trusts",
         "tech_lead": "Sara Gowen",
         "tech_stack": ".NET",
-        "delivery_status": "Alpha",
+        "sql_user": "",
+        "default_sql_schema": "",
         "notes": "New app, no DB usage yet"
     },
     {
@@ -44,7 +49,8 @@
         "repo_name": "Dfe.Academies.External",
         "tech_lead": "Paul Lockwood",
         "tech_stack": ".NET",
-        "delivery_status": "",
+        "sql_user": "",
+        "default_sql_schema": "",
         "notes": "does not appear to use any DB"
     },
     {
@@ -52,7 +58,8 @@
         "repo_name": "prepare-academy-conversions",
         "tech_lead": "Paul Lockwood",
         "tech_stack": ".NET",
-        "delivery_status": "",
+        "sql_user": "",
+        "default_sql_schema": "",
         "notes": "uses Academies and TRAMS API"
     },
     {
@@ -60,7 +67,8 @@
         "repo_name": "prepare-academy-transfers",
         "tech_lead": "Paul Lockwood",
         "tech_stack": ".NET",
-        "delivery_status": "",
+        "sql_user": "",
+        "default_sql_schema": "",
         "notes": "uses TRAMS API"
     }
 ]
