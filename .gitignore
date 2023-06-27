@@ -5,3 +5,4 @@ services-repos/*/
 *.ipynb
 *.DS_Store
 nginx_auth.txt
+__pycache__
