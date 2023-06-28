@@ -51,5 +51,31 @@ When changes are pushed to GitHub, it will run a workflow to build the HTML file
 There are a number of required GitHub Actions secrets:
 
 - `DATABASE_STRUCTURE_CONTENTS` - CSV contents of database structure CSV from Akhtar
+- `REPORTING_VIEWS_DEPENDENCIES_CONTENTS` - CSV contents of report dependencies on schemas and tables
 - `FLY_API_TOKEN` - for deploying of HTML to fly
 - `NGINX_AUTH` - http auth credentials for nginx (`htpasswd` format)
+
+### DATABASE_STRUCTURE_CONTENTS
+
+This can be generated with the following SQL:
+
+```sql
+SELECT TABLE_SCHEMA, TABLE_NAME
+FROM INFORMATION_SCHEMA.TABLES
+```
+
+### REPORTING_VIEWS_DEPENDENCIES_CONTENTS
+
+This can be generated with the following SQL:
+
+```sql
+SELECT
+    OBJECT_NAME(d.referencing_id) AS [view],
+    d.referenced_schema_name AS [schema],
+    d.referenced_entity_name AS [table]
+FROM
+    sys.sql_expression_dependencies AS d
+    JOIN sys.views AS v ON d.referencing_id = v.object_id
+WHERE
+    v.schema_id = SCHEMA_ID('reports');
+```
