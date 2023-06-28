@@ -27,6 +27,11 @@ jobs:
         env:
           DATABASE_STRUCTURE_CONTENTS: ${{secrets.DATABASE_STRUCTURE_CONTENTS}}
 
+      - run: 'echo "${REPORTING_VIEWS_DEPENDENCIES_CONTENTS}" > reporting_views_dependencies.csv'
+        shell: bash
+        env:
+          REPORTING_VIEWS_DEPENDENCIES_CONTENTS: ${{secrets.REPORTING_VIEWS_DEPENDENCIES_CONTENTS}}
+
       - run: ./scripts/build
 
       - uses: superfly/flyctl-actions/setup-flyctl@master
