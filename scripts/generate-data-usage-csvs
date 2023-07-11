@@ -66,6 +66,13 @@ function search_repo_for_db_references () {
         | sed -nr  's/.*ToTable\("(.*)".*"(.*)".*/\2,\1,1/p' \
         >> "${CSV_FILE}"
 
+    # Example: https://github.com/DFE-Digital/academies-api/blob/8cf6be20dd94a373c3e6b2f3783a64ae6cd2cfdc/TramsDataApi/DatabaseModels/TramsDbContext.cs#L102C19-L102C19
+    # entity.ToView("vw_Fss_ProjectData", "fsg");
+
+    grep -Rh "ToView" ${REPOS_DIR}/${REPO_NAME}/ \
+        | sed -nr  's/.*ToView\("(.*)".*"(.*)".*/\2,\1,1/p' \
+        >> "${CSV_FILE}"
+
     # To scan files created by dotnet-ef migration
     # CREATE TABLE [concerns].[ConcernsCase] (
 
