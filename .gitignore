@@ -2,7 +2,9 @@ services-usage/*.csv
 services-repos/*/
 *.html
 *.csv
+pipeline_dependencies.json
 *.ipynb
 *.DS_Store
 nginx_auth.txt
 __pycache__
+sip-adb-academies-datastore/

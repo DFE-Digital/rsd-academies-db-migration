@@ -2,6 +2,7 @@ import pandas as pd
 import panel as pn
 import json
 from usage_reports import reports_usage
+from pipelines import pipelines_usage
 
 pn.extension('tabulator')
 
@@ -12,33 +13,41 @@ prod_structure = pd.read_csv("database_structure.csv")
 schema_tables = prod_structure[["TABLE_SCHEMA", "TABLE_NAME"]].drop_duplicates()
 # schema_tables.to_csv("reduced_database_structure.csv", index=False)
 schema_tables = schema_tables.rename(columns={"TABLE_SCHEMA": "schema", "TABLE_NAME": "table"})
+schema_tables['schema'] = schema_tables['schema'].apply(str.lower)
+schema_tables['table'] = schema_tables['table'].apply(str.lower)
 
 for service in services:
     data = pd.read_csv(f"services-usage/{service['repo_name']}.csv")
     data = data.rename(columns={service["repo_name"]: service["name"]})
+    data['schema'] = data['schema'].apply(str.lower)
+    data['table'] = data['table'].apply(str.lower)
     schema_tables = schema_tables.merge(data, how="outer", on=["schema", "table"])
     schema_tables[service["name"]].fillna('')
 
 schema_tables = schema_tables.merge(reports_usage, how="outer", on=["schema", "table"])
+schema_tables = schema_tables.merge(pipelines_usage, how="left", on=["schema", "table"])
 
 schema_tables = schema_tables.sort_values(["schema", "table"], ignore_index = True, key=lambda col: col.str.lower())
 
 service_names = [service["name"] for service in services]
 report_names = [col for col in reports_usage.columns if col not in ['schema', 'table']]
+pipeline_names = [col for col in pipelines_usage.columns if col not in ['schema', 'table']]
 
 schema_tables['Services'] = schema_tables[service_names].count(axis=1)
 schema_tables['Reports'] = schema_tables[report_names].count(axis=1)
-schema_tables['Total'] = schema_tables[['Services', 'Reports']].sum(axis=1)
+schema_tables['Pipelines'] = schema_tables[pipeline_names].count(axis=1)
+schema_tables['Total'] = schema_tables[['Services', 'Reports', 'Pipelines']].sum(axis=1)
 
 # unused_tables = schema_tables[schema_tables['Services'] == 0]
 used_tables = schema_tables[schema_tables['Services'] >= 1]
 
 db_headers = ["schema", "table"] #[("Academies DB", x) for x in ["schema", "table"]]
-count_headers = ["Total", "Services", "Reports"] #[("Usage", "Services Count")]
+count_headers = ["Total", "Services", "Reports", "Pipelines"] #[("Usage", "Services Count")]
 service_headers = service_names #[("Services", x) for x in services.keys()]
 report_headers = report_names
+pipeline_headers = pipeline_names
 
-schema_tables = schema_tables[db_headers + count_headers + service_headers + report_headers]
+schema_tables = schema_tables[db_headers + count_headers + service_headers + report_headers + pipeline_headers]
 
 services_data = pd.read_json("./services.json")
 
@@ -58,7 +67,7 @@ schema_tables = schema_tables.fillna("")
 
 df_tab = pn.widgets.Tabulator(
     schema_tables,
-    groups={"Academies DB": db_headers, "Totals": count_headers, "Services": service_headers, "Reports": report_headers},
+    groups={"Academies DB": db_headers, "Totals": count_headers, "Services": service_headers, "Reports": report_headers, "Pipelines": pipeline_headers},
     show_index = False,
     frozen_columns=["Academies DB", "Totals"],
     pagination=None,
@@ -70,6 +79,7 @@ df_tab = pn.widgets.Tabulator(
     },
 )
 
+# https://getbootstrap.com/docs/5.3/customize/color/#all-colors
 def highlight_row(row):
     style = ''
 
@@ -84,6 +94,9 @@ def highlight_row(row):
 
     if row['Services'] > 0 and row['Reports'] > 0:
         style = 'background-color: #fd7e14;' # orange
+
+    if row['Services'] > 0 and row['Pipelines'] > 0:
+        style = 'background-color: #dc3545;' # red
 
     return [style] * len(row)
 

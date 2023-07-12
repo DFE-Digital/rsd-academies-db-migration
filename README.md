@@ -79,3 +79,16 @@ FROM
 WHERE
     v.schema_id = SCHEMA_ID('reports');
 ```
+
+### PIPELINE_DEPENDENCIES_CONTENTS
+
+This can be generated with the Azure CLI tool, using the following when authenticated:
+
+```sh
+az datafactory pipeline list \
+    --subscription "DFE T1 Production" \
+    --factory-name "adf-t1pr-sips-dataflow" \
+    --resource-group "RG-T1PR-SIPS" | \
+        jq '[ .[] | {name, procedures: [ .activities[] | .storedProcedureName ]} ]' > \
+    pipeline_dependencies.json
+```
