@@ -12,6 +12,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: "Clone from Azure: sip-adb-academies-datastore"
+        run: |
+          B64_PAT=$(printf ":%s" "${AZURE_DEVOPS_PAT}" | base64)
+          git -c http.extraHeader="Authorization: Basic ${B64_PAT}" \
+            clone --depth=1 \
+            https://dfe-gov-uk.visualstudio.com/Academies-and-Free-Schools-SIP/_git/sip-adb-academies-datastore
+        env:
+          AZURE_DEVOPS_PAT: ${{secrets.AZURE_DEVOPS_PAT}}
+
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11.3'
@@ -31,6 +40,11 @@ jobs:
         shell: bash
         env:
           REPORTING_VIEWS_DEPENDENCIES_CONTENTS: ${{secrets.REPORTING_VIEWS_DEPENDENCIES_CONTENTS}}
+
+      - run: 'echo "${PIPELINE_DEPENDENCIES_CONTENTS}" > pipeline_dependencies.json'
+        shell: bash
+        env:
+          PIPELINE_DEPENDENCIES_CONTENTS: ${{secrets.PIPELINE_DEPENDENCIES_CONTENTS}}
 
       - run: ./scripts/build
 
