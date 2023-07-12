@@ -92,3 +92,11 @@ az datafactory pipeline list \
         jq '[ .[] | {name, procedures: [ .activities[] | .storedProcedureName ]} ]' > \
     pipeline_dependencies.json
 ```
+
+### AZURE_DEVOPS_PAT
+
+A personal access token (PAT) can be generated on this page:
+
+https://dfe-gov-uk.visualstudio.com/_usersSettings/tokens
+
+It only needs `Code (Read)` scope.
