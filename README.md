@@ -82,7 +82,14 @@ WHERE
 
 ### PIPELINE_DEPENDENCIES_CONTENTS
 
-This can be generated with the Azure CLI tool, using the following when authenticated:
+This can be generated with the Azure CLI tool. To install on macOS, run:
+
+```sh
+brew install azure-cli
+az login
+```
+
+Use the following when authenticated:
 
 ```sh
 az datafactory pipeline list \
@@ -95,8 +102,34 @@ az datafactory pipeline list \
 
 ### AZURE_DEVOPS_PAT
 
+This is needed by GitHub Actions to be able to clone the repo from Azure DevOps via HTTPS.
+
+***
+
+**Note:** If you're just cloning it locally, just ensure you have an SSH key uploaded to Azure DevOps, and ensure the SSH key is a legacy key (Azure doesn't support the more modern variety) with:
+
+```sh
+ssh-keygen -t rsa -b 4096
+```
+
+See: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key
+
+***
+
 A personal access token (PAT) can be generated on this page:
 
 https://dfe-gov-uk.visualstudio.com/_usersSettings/tokens
 
 It only needs `Code (Read)` scope.
+
+### FLY_API_TOKEN
+
+This is needed by GitHub Actions to be able to deploy the page to fly.io. A token can be created here:
+
+https://fly.io/apps/rsd-academies-db-migration/tokens
+
+### NGINX_AUTH
+
+Used for HTTP basic auth to provide some basic protection for viewing the usage matrix. The credentials can be shared amongst the RSD team. This uses the standard `htpasswd` format, can an online tool such as the following can be used to generate the necessary string value:
+
+https://www.web2generators.com/apache-tools/htpasswd-generator
