@@ -124,6 +124,8 @@ It only needs `Code (Read)` scope.
 
 ### FLY_API_TOKEN
 
+**Note:** The deploy tokens are currently quite experiemental and appear to be flakey, so instead use an account-wide access token which you can generate here: https://fly.io/user/personal_access_tokens
+
 This is needed by GitHub Actions to be able to deploy the page to fly.io. A token can be created here:
 
 https://fly.io/apps/rsd-academies-db-migration/tokens
