@@ -1,3 +1,5 @@
+# This is deployed to fly.io
+
 FROM nginx
 
 COPY index.html /usr/share/nginx/html/

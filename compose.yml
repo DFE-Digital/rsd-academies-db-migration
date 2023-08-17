@@ -1,3 +1,7 @@
+# Used for running the usage matrix via nginx locally, to test http auth etc
+# as would be built for the prod deploy to fly.io
+#
+# For local development, just use ./scripts/server
 services:
   web:
     build:

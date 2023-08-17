@@ -1,12 +1,17 @@
+# Used to extract database usage from each of the various services
+# Will use entity-framework or the rails console depending on the service
+# Code scanning is still also required to pick up other references to tables
 services:
   concerns:
     build:
       context: ./services-repos/amsd-casework/
       target: publish
+
   academies_api:
     build:
       context: ./services-repos/academies-api/
       target: build
+
   academisation_api:
     build:
       context: ./services-repos/academies-academisation-api/
@@ -30,16 +35,12 @@ services:
       CI: "true"
       SENTRY_ENV: test
       REDIS_URL: redis://test-redis:6379
-    # networks:
-    #   - test-ci
 
   test-db:
     image: mcr.microsoft.com/azure-sql-edge:latest
     environment:
       ACCEPT_EULA: Y
       MSSQL_SA_PASSWORD: strongPassword&
-    # networks:
-    #   - test-ci
 
   test-db-health:
     image: mcr.microsoft.com/mssql-tools:latest
@@ -50,8 +51,3 @@ services:
       retries: 10
     depends_on:
       - test-db
-#     networks:
-#       - test-ci
-
-# networks:
-#   test-ci:
